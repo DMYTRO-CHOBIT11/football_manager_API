@@ -2,7 +2,6 @@ package com.football_manager.football_manager.controllers;
 
 import com.football_manager.football_manager.dao.PlayerDao;
 import com.football_manager.football_manager.model.Player;
-import com.football_manager.football_manager.model.Team;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

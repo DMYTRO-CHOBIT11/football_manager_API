@@ -43,7 +43,6 @@ public class TeamController {
     @PostMapping("/transfer")
     public ModelAndView transfer(@RequestParam long player_id,long team_buy_id,
                                    long team_sell_id,int commission){
-        System.out.println("HERE! "+player_id+" "+team_buy_id+" "+team_sell_id+" "+commission);
         teamDao.transfer(player_id, team_buy_id, team_sell_id, commission);
         ModelAndView modelAndView=new ModelAndView();
         modelAndView.setViewName("index");
@@ -52,7 +51,16 @@ public class TeamController {
 
 
     @GetMapping("/getAllTeams")
-    public ResponseEntity getAllTeams(){
-        return  new ResponseEntity(teamDao.getAll(),HttpStatus.OK);
+    public ModelAndView getAllTeams(){
+        teamDao.getAll();
+        return null;
+    }
+
+    @PostMapping("/terminateContract/{id}")
+    public ResponseEntity transfer(@PathVariable("id") long player_id){
+        teamDao.terminateTheContract(player_id);
+//        ModelAndView modelAndView=new ModelAndView();
+//        modelAndView.setViewName("index");
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

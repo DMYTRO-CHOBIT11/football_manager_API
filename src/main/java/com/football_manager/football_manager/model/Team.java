@@ -18,7 +18,7 @@ public class Team {
     private String country;
     private String city;
     private double budget;
-    @OneToMany(mappedBy = "team")
+    @OneToMany(mappedBy = "team",orphanRemoval = true)
     private Set<Player> players=new HashSet<>();
 
 }

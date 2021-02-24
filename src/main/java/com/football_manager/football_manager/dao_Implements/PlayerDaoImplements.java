@@ -13,6 +13,7 @@ import java.util.List;
 public class PlayerDaoImplements implements PlayerDao {
     @Autowired
     private EntityManager entityManager;
+
     @Override
     @Transactional
     public void addPlayer(Player player) {

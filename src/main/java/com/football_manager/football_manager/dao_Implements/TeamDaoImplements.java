@@ -10,7 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -70,41 +72,46 @@ public class TeamDaoImplements implements TeamDao {
     @Override
     @Transactional
     public void transfer(long player_id, long buyTeamId, long sellTeamId,int commission) {
-        System.out.println(player_id+" "+buyTeamId+" "+sellTeamId+" "+commission);
         Team team_buy=entityManager.find(Team.class,buyTeamId);
-        System.out.println(team_buy.getName());
         Team team_sell=entityManager.find(Team.class,sellTeamId);
         Player p=playerDao.getPlayerById(player_id);
-        System.out.println("Player= "+p.getFull_name());
-        double costForPlayer=transferCost(commission, player_id);
-        System.out.println(costForPlayer);
-        team_buy.setBudget(team_buy.getBudget()-costForPlayer);
-        team_sell.getPlayers().remove(p);
-        team_sell.setBudget(team_sell.getBudget()+costForPlayer);
-        team_buy.getPlayers().add(p);
-        entityManager.persist(team_buy);
-        entityManager.persist(team_sell);
-        p.setTeam(team_buy);
+        double costForPlayer=transferCost(commission, p);
+
+        entityManager.createQuery("update Team set budget=:newBudget where id=:id")
+                .setParameter("newBudget",team_buy.getBudget()-costForPlayer)
+                .setParameter("id",team_buy.getId())
+                .executeUpdate();
+
+        entityManager.createQuery("update Team set budget=:newBudget where id=:id")
+                .setParameter("newBudget",team_sell.getBudget()+costForPlayer)
+                .setParameter("id",team_sell.getId())
+                .executeUpdate();
+
         entityManager.createQuery("update Player set team=:team_buy where id=:id")
                 .setParameter("team_buy",team_buy)
                 .setParameter("id",player_id)
                 .executeUpdate();
     }
     @Override
-    public double transferCost(int commission,long player_id){
-        Player player=playerDao.getPlayerById(player_id);
+    public double transferCost(int commission,Player player){
         LocalDate today = LocalDate.now();
         Period age = Period.between(player.getBirthday().toLocalDate(), today);
-        Period period=Period.between(player.getStart_career().toLocalDate(),today);
         int years = age.getYears();
-        int experience=period.getMonths();
-        System.out.println("Age "+years);
+        long experience= ChronoUnit.MONTHS.between(
+                player.getStart_career().toLocalDate().withDayOfMonth(1),
+                today.withDayOfMonth(1));
         double sum=experience * 10000/years;
-        System.out.println("sum "+sum);
         double com=(sum*commission)/100;
-        System.out.println(commission);
-        System.out.println("com "+com);
         return com+sum;
+    }
+
+    @Override
+    @Transactional
+    public void terminateTheContract(long player_id) {
+        entityManager.createQuery("update Player set team.id=:newId where id=:id")
+                .setParameter("newId",null)
+                .setParameter("id",player_id)
+                .executeUpdate();
     }
 
 }
