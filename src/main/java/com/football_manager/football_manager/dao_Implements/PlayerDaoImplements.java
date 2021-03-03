@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PlayerDaoImplements implements PlayerDao {
@@ -27,8 +28,9 @@ public class PlayerDaoImplements implements PlayerDao {
 
     @Override
     public Player getPlayerById(long id) {
-        Player player=entityManager.createQuery("select player from Player player where player.id=:id",Player.class)
-                .setParameter("id",id).getSingleResult();
+//        Player player=entityManager.createQuery("select player from Player player where player.id=:id",Player.class)
+//                .setParameter("id",id).getSingleResult();
+        Player player=entityManager.find(Player.class,id);
         return player;
     }
 
@@ -53,5 +55,14 @@ public class PlayerDaoImplements implements PlayerDao {
         entityManager.createNativeQuery("delete from Player where id=:id",Player.class)
                 .setParameter("id",id).executeUpdate();
         return "Player with Id= "+id+" was deleted!";
+    }
+
+    @Override
+    public List<Player> freePlayers() {
+        return getAll().stream().filter(player -> {
+            if (player.getTeam()==null){
+                return true;
+            }return false;
+        }).collect(Collectors.toList());
     }
 }

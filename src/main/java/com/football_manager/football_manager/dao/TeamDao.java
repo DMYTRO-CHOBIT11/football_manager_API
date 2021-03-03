@@ -14,4 +14,5 @@ public interface TeamDao {
     void transfer(long player_id,long buyTeamId,long sellTeamId,int commission);
     double transferCost(int commission, Player player);
     void terminateTheContract(long player_id);
+    void addFreePlayer(long player_id,long team_id);
 }

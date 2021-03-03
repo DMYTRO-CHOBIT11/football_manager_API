@@ -77,20 +77,23 @@ public class TeamDaoImplements implements TeamDao {
         Player p=playerDao.getPlayerById(player_id);
         double costForPlayer=transferCost(commission, p);
 
-        entityManager.createQuery("update Team set budget=:newBudget where id=:id")
-                .setParameter("newBudget",team_buy.getBudget()-costForPlayer)
-                .setParameter("id",team_buy.getId())
-                .executeUpdate();
+        if (team_buy.getBudget()>costForPlayer){
 
-        entityManager.createQuery("update Team set budget=:newBudget where id=:id")
-                .setParameter("newBudget",team_sell.getBudget()+costForPlayer)
-                .setParameter("id",team_sell.getId())
-                .executeUpdate();
+            entityManager.createQuery("update Team set budget=:newBudget where id=:id")
+                    .setParameter("newBudget",team_buy.getBudget()-costForPlayer)
+                    .setParameter("id",team_buy.getId())
+                    .executeUpdate();
 
-        entityManager.createQuery("update Player set team=:team_buy where id=:id")
-                .setParameter("team_buy",team_buy)
-                .setParameter("id",player_id)
-                .executeUpdate();
+            entityManager.createQuery("update Team set budget=:newBudget where id=:id")
+                    .setParameter("newBudget",team_sell.getBudget()+costForPlayer)
+                    .setParameter("id",team_sell.getId())
+                    .executeUpdate();
+
+            entityManager.createQuery("update Player set team=:team_buy where id=:id")
+                    .setParameter("team_buy",team_buy)
+                    .setParameter("id",player_id)
+                    .executeUpdate();
+        }else System.out.println("---not enough money---");
     }
     @Override
     public double transferCost(int commission,Player player){
@@ -110,6 +113,18 @@ public class TeamDaoImplements implements TeamDao {
     public void terminateTheContract(long player_id) {
         entityManager.createQuery("update Player set team.id=:newId where id=:id")
                 .setParameter("newId",null)
+                .setParameter("id",player_id)
+                .executeUpdate();
+    }
+
+    @Override
+    @Transactional
+    public void addFreePlayer(long player_id,long team_id) {
+        System.out.println("player"+player_id);
+        System.out.println("team"+team_id);
+        Team team=entityManager.find(Team.class,team_id);
+        entityManager.createQuery("update Player set team=:newTeam where id=:id")
+                .setParameter("newTeam",team)
                 .setParameter("id",player_id)
                 .executeUpdate();
     }

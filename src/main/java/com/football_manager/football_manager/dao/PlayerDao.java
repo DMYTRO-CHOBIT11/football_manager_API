@@ -10,4 +10,5 @@ public interface PlayerDao {
     List<Player> getAll();
     void updatePlayerById(long id, Player player);
     String deletePlayerById(long id);
+    List<Player>freePlayers();
 }
