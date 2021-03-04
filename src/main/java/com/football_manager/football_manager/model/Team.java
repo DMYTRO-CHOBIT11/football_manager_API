@@ -20,6 +20,7 @@ public class Team {
     private long id;
 
     @NotBlank(message = "Input team name")
+    @Column(unique = true)
     private String name;
 
     @NotBlank(message = "Input country name")
@@ -31,7 +32,7 @@ public class Team {
     @DecimalMin(value = "1",message = "Input budget")
     private double budget;
 
-    @OneToMany(mappedBy = "team",orphanRemoval = true)
+    @OneToMany(mappedBy = "team")
     private Set<Player> players=new HashSet<>();
 
 }

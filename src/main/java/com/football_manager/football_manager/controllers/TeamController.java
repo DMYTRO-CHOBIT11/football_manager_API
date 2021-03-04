@@ -68,31 +68,16 @@ public class TeamController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public Map<String, String> handleValidationExceptions(
-//            MethodArgumentNotValidException ex) {
-//        Map<String, String> errors = new HashMap<>();
-//        ex.getBindingResult().getAllErrors().forEach((error) -> {
-//            String fieldName = ((FieldError) error).getField();
-//            String errorMessage = error.getDefaultMessage();
-//            errors.put(fieldName, errorMessage);
-//        });
-//        return errors;
-//    }
-
-//    @GetMapping("/transfer")
-//    public ModelAndView transfer(){
-//        ModelAndView modelAndView=new ModelAndView();
-//        modelAndView.setViewName("index");
-//        return modelAndView;
-//    }
-//    @PostMapping("/transfer/{player_id}/{team_buy_id}/{team_sell_id}")
-//    public ModelAndView transfer(@PathVariable long player_id,@PathVariable long team_buy_id,
-//                                 @PathVariable long team_sell_id,int commission){
-//        ModelAndView modelAndView=new ModelAndView();
-//        modelAndView.setViewName("index");
-//        teamDao.transfer(player_id, team_buy_id, team_sell_id, commission);
-//        return modelAndView;
-//    }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
+    }
 }

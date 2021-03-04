@@ -1,7 +1,6 @@
 package com.football_manager.football_manager.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,10 +20,8 @@ public class Player {
     @NotBlank(message = "Input player name")
     private String full_name;
 
-//    @NotEmpty(message = "Input date of birthday")
     private Date birthday;
 
-//    @NotEmpty(message = "Input date of start career ")
     private Date start_career;
 
     @ManyToOne

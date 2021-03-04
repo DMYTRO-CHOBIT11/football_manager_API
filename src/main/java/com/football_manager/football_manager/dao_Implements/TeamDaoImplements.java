@@ -65,7 +65,11 @@ public class TeamDaoImplements implements TeamDao {
     @Override
     @Transactional
     public String deleteTeamById(long id){
-        entityManager.createNativeQuery("delete from Team where id=:id").setParameter("id",id).executeUpdate();
+        Team team=entityManager.find(Team.class,id);
+        team.getPlayers().forEach(p->p.setTeam(null));
+        entityManager.createNativeQuery("delete from Team where id=:id")
+                .setParameter("id",id)
+                .executeUpdate();
         return "Team with ID= "+id+" was deleted!";
     }
 
@@ -76,6 +80,7 @@ public class TeamDaoImplements implements TeamDao {
         Team team_sell=entityManager.find(Team.class,sellTeamId);
         Player p=playerDao.getPlayerById(player_id);
         double costForPlayer=transferCost(commission, p);
+        System.out.print(costForPlayer);
 
         if (team_buy.getBudget()>costForPlayer){
 
